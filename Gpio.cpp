@@ -80,6 +80,7 @@ PwmPb3::PwmPb3()
     GTCCR |= (1 << PWM1B) | (1U << COM1B0);
     // No clock prescaling, start timer.
     TCCR1 = (1U << CS10);
+    OCR1B = 0U;
 }
 
 PwmPb3::~PwmPb3()
