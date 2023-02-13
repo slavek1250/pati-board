@@ -51,6 +51,35 @@ private:
     const uint8_t m_Pin;
 };
 
+/// @brief PWM interface.
+class PwmIf
+{
+public:
+    /// @brief Read back PWM duty-cycle
+    /// @return PWM duty cycle.
+    virtual uint8_t Read() const = 0;
+
+    /// @brief Set PWM duty-cycle
+    /// @param value PWM duty cycle to set.
+    virtual void Write(const uint8_t value) const = 0;
+};
+
+/// @brief Implementation of PWM for PB3 pin.
+class PwmPb3 :
+    public PwmIf
+{
+public:
+    PwmPb3();
+
+    ~PwmPb3();
+
+    /// @copydoc Gpio::PwmIf::Read()
+    uint8_t Read() const override;
+
+    /// @copydoc Gpio::PwmIf::Write()
+    void Write(const uint8_t value) const override;
+};
+
 }
 
 #endif

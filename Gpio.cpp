@@ -4,6 +4,7 @@
 
 #include "Gpio.hpp"
 #include <avr/io.h>
+#include <util/delay.h>
 
 namespace Gpio
 {
@@ -69,6 +70,36 @@ void BinaryOutput::Write(const bool state) const
     {
         PORTB &= ~(1U << m_Pin);
     }
+}
+
+PwmPb3::PwmPb3()
+{
+    // Configure as output.
+    DDRB |= (1U << DDB3);
+    // Enable PWM B, Toggle ~OC1B output line.
+    GTCCR |= (1 << PWM1B) | (1U << COM1B0);
+    // No clock prescaling, start timer.
+    TCCR1 = (1U << CS10);
+}
+
+PwmPb3::~PwmPb3()
+{
+    // Disable timer.
+    TCCR1 &= ~(1U << CS10);
+    // Disable PWM B.
+    TCCR0B &= ~((1 << PWM1B) | (1U << COM1B0));
+    // Configure back as input.
+    DDRB &= ~(1U << DDB3);
+}
+
+uint8_t PwmPb3::Read() const
+{
+    return OCR1B;
+}
+
+void PwmPb3::Write(const uint8_t value) const
+{
+    OCR1B = value;
 }
 
 }
