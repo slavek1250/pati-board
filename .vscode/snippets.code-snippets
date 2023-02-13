@@ -1,0 +1,33 @@
+{
+    "pb-hpp": {
+        "description": "File hpp template",
+        "scope": "cpp",
+        "prefix": "pbhpp",
+        "body": [
+            "/// @file $TM_FILENAME",
+            "///",
+            "/// @copyright Pati-Board $CURRENT_YEAR",
+            "",
+            "#ifndef ${TM_FILENAME/(.*)\\.(.*)/${1:/upcase}_${2:/upcase}/g}",
+            "#define ${TM_FILENAME/(.*)\\.(.*)/${1:/upcase}_${2:/upcase}/g}",
+            "",
+            "$1",
+            "",
+            "#endif",
+            ""
+        ]
+    },
+    "pb-cpp": {
+        "description": "File cpp template",
+        "scope": "cpp",
+        "prefix": "pbcpp",
+        "body": [
+            "/// @file $TM_FILENAME",
+            "///",
+            "/// @copyright Pati-Board $CURRENT_YEAR",
+            "",
+            "$1",
+            ""
+        ]
+    }
+}

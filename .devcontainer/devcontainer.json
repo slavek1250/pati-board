@@ -1,7 +1,7 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the
 // README at: https://github.com/devcontainers/templates/tree/main/src/cpp
 {
-	"name": "C++",
+	"name": "Pati-Board",
 	"build": {
 		"dockerfile": "Dockerfile"
 	},
@@ -15,7 +15,13 @@
 		"vscode": {
 			"settings": {},
 			"extensions": [
-				"streetsidesoftware.code-spell-checker"
+				"streetsidesoftware.code-spell-checker",
+				"ms-vscode.cpptools-extension-pack",
+				"cschlosser.doxdocgen",
+				"eamodio.gitlens",
+				"vscode.hexeditor",
+				"ybaumes.highlight-trailing-white-spaces",
+				"ms-vscode.makefile-tools"
 			]
 		}
 	}
