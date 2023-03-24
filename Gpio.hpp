@@ -64,6 +64,25 @@ public:
     virtual void Write(const uint8_t value) const = 0;
 };
 
+/// @brief Reverse PWM logic.
+class PwmReverse :
+    public PwmIf
+{
+public:
+    /// @brief Constructor.
+    /// @param rWrappedPwm Wrapped PWM.
+    PwmReverse(const PwmIf& rWrappedPwm);
+
+    /// @copydoc Gpio::PwmIf::Read()
+    uint8_t Read() const override;
+
+    /// @copydoc Gpio::PwmIf::Write()
+    void Write(const uint8_t value) const override;
+
+private:
+    const PwmIf& m_rWrappedPwm;
+};
+
 /// @brief Implementation of PWM for PB3 pin.
 class PwmPb3 :
     public PwmIf

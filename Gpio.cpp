@@ -72,6 +72,24 @@ void BinaryOutput::Write(const bool state) const
     }
 }
 
+PwmReverse::PwmReverse(const PwmIf& rWrappedPwm) :
+    m_rWrappedPwm(rWrappedPwm)
+{
+}
+
+uint8_t PwmReverse::Read() const
+{
+    const uint8_t MAX = 0xFFU;
+    const uint8_t realVal = m_rWrappedPwm.Read();
+    return realVal ^ MAX;
+}
+
+void PwmReverse::Write(const uint8_t value) const
+{
+    constexpr const uint8_t MAX = 0xFFU;
+    m_rWrappedPwm.Write(value ^ MAX);
+}
+
 PwmPb3::PwmPb3()
 {
     // Configure as output.
