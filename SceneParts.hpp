@@ -8,13 +8,13 @@
 #include "SceneIf.hpp"
 #include "Gpio.hpp"
 
-template<uint16_t DurationMs>
 class ScenePartOff :
    public SceneIf
 {
 public:
-    ScenePartOff(const Gpio::PwmIf& rPwm) :
-        m_rPwm(rPwm)
+    ScenePartOff(const Gpio::PwmIf& rPwm, const uint16_t durationMs) :
+        m_rPwm(rPwm),
+        m_DurationMs(durationMs)
     {
     }
 
@@ -25,20 +25,21 @@ public:
 
     uint16_t GetDurationMs() const override
     {
-        return DurationMs;
+        return m_DurationMs;
     }
 
 private:
     const Gpio::PwmIf& m_rPwm;
+    const uint16_t m_DurationMs;
 };
 
-template<uint16_t DurationMs>
 class ScenePartOn :
    public SceneIf
 {
 public:
-    ScenePartOn(const Gpio::PwmIf& rPwm) :
-        m_rPwm(rPwm)
+    ScenePartOn(const Gpio::PwmIf& rPwm, const uint16_t durationMs) :
+        m_rPwm(rPwm),
+        m_DurationMs(durationMs)
     {
     }
 
@@ -49,21 +50,23 @@ public:
 
     uint16_t GetDurationMs() const override
     {
-        return DurationMs;
+        return m_DurationMs;
     }
 
 private:
     const Gpio::PwmIf& m_rPwm;
+    const uint16_t m_DurationMs;
 };
 
-template<uint16_t DurationMs>
 class ScenePartOnRamp :
    public SceneIf
 {
 public:
-    ScenePartOnRamp(const Gpio::PwmIf& rPwm) :
+    ScenePartOnRamp(const Gpio::PwmIf& rPwm, const uint16_t durationMs) :
         m_rPwm(rPwm),
-        m_IncCnt(0U)
+        m_IncInterval(durationMs / PWM_DUTY_CYCLE),
+        m_IncCnt(0U),
+        m_DurationMs(durationMs)
     {
     }
 
@@ -75,7 +78,7 @@ public:
 
     void Tick() override
     {
-        if (++m_IncCnt == INC_INTERVAL)
+        if (++m_IncCnt == m_IncInterval)
         {
             m_rPwm.Write(m_rPwm.Read() + 1U);
             m_IncCnt = 0U;
@@ -84,26 +87,26 @@ public:
 
     uint16_t GetDurationMs() const override
     {
-        return DurationMs;
+        return m_DurationMs;
     }
 
 private:
     static constexpr const uint16_t PWM_DUTY_CYCLE = 256U;
-    static_assert((DurationMs % PWM_DUTY_CYCLE == 0U), "Duration must be mult. of 256");
-    static constexpr const uint8_t INC_INTERVAL = static_cast<uint8_t>(DurationMs / PWM_DUTY_CYCLE);
     const Gpio::PwmIf& m_rPwm;
+    const uint8_t m_IncInterval;
     uint8_t m_IncCnt = 0U;
-
+    const uint16_t m_DurationMs;
 };
 
-template<uint16_t DurationMs>
 class ScenePartOffRamp :
    public SceneIf
 {
 public:
-    ScenePartOffRamp(const Gpio::PwmIf& rPwm) :
+    ScenePartOffRamp(const Gpio::PwmIf& rPwm, const uint16_t durationMs) :
         m_rPwm(rPwm),
-        m_IncCnt(0U)
+        m_IncInterval(durationMs / PWM_DUTY_CYCLE),
+        m_IncCnt(0U),
+        m_DurationMs(durationMs)
     {
     }
 
@@ -115,7 +118,7 @@ public:
 
     void Tick() override
     {
-        if (++m_IncCnt == INC_INTERVAL)
+        if (++m_IncCnt == m_IncInterval)
         {
             m_rPwm.Write(m_rPwm.Read() - 1U);
             m_IncCnt = 0U;
@@ -124,16 +127,15 @@ public:
 
     uint16_t GetDurationMs() const override
     {
-        return DurationMs;
+        return m_DurationMs;
     }
 
 private:
     static constexpr const uint16_t PWM_DUTY_CYCLE = 256U;
-    static_assert((DurationMs % PWM_DUTY_CYCLE == 0U), "Duration must be mult. of 256");
-    static constexpr const uint8_t INC_INTERVAL = static_cast<uint8_t>(DurationMs / PWM_DUTY_CYCLE);
     const Gpio::PwmIf& m_rPwm;
+    const uint8_t m_IncInterval;
     uint8_t m_IncCnt = 0U;
-
+    const uint16_t m_DurationMs;
 };
 
 #endif
