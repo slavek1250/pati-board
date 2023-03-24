@@ -13,7 +13,7 @@ Scene::Scene(SceneIf* const* const pSubScenes, const uint8_t subScenesNum) :
 void Scene::Start()
 {
     m_SceneIte = 0U;
-    m_MsCnt = 0U;
+    m_MsCnt = 1U;
     m_pSubScenes[0U]->Start();
 }
 
