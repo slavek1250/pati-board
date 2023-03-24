@@ -30,50 +30,50 @@ private:
     bool m_bChangeScene = false;
 };
 
+#define countof(x) (sizeof(x) / sizeof(x[0U]))
+
 int main(void)
 {
     wdt_enable(WDTO_1S);
-    Gpio::PwmPb3 ledPwmOutput;
+    Gpio::PwmPb3 ledPwmOutputRaw;
+    Gpio::PwmReverse ledPwmOutput(ledPwmOutputRaw);
     Gpio::BinaryInput btnDriver(4U, true);
     ButtonObserver btnObserver;
     Button btn(btnObserver, btnDriver, true);
 
-    ScenePartOn<500U> sceneOn(ledPwmOutput);
-    ScenePartOff<500U> sceneOff(ledPwmOutput);
-    ScenePartOnRamp<1024U> sceneOnRamp(ledPwmOutput);
-    ScenePartOffRamp<1024U> sceneOffRamp(ledPwmOutput);
+    ScenePartOn sceneOn(ledPwmOutput, 250U);
+    ScenePartOff sceneOff(ledPwmOutput, 250U);
+    ScenePartOnRamp sceneLongOnRamp(ledPwmOutput, 4096U);
+    ScenePartOffRamp sceneLongOffRamp(ledPwmOutput, 4096U);
 
-    // Scene one.
-    SceneIf* const pSceneOneParts[] = {
-        &sceneOn,
-        &sceneOff,
+    SceneIf* const pSceneSlowBreathingParts[] = {
+        &sceneLongOnRamp,
+        &sceneLongOffRamp
     };
-    Scene sceneOne(pSceneOneParts, 2U);
+    Scene sceneSlowBreathing(pSceneSlowBreathingParts, countof(pSceneSlowBreathingParts));
 
-    // Scene two.
-    SceneIf* const pSceneTwoParts[] = {
-        &sceneOnRamp,
+    SceneIf* const pSceneQuickBlinkingParts[] = {
         &sceneOn,
-        &sceneOn,
-        &sceneOffRamp,
         &sceneOff
     };
-    Scene sceneTwo(pSceneTwoParts, 5U);
+    Scene sceneQuickBlinking(pSceneQuickBlinkingParts, countof(pSceneQuickBlinkingParts));
 
     // All scenes
     SceneIf* const pScenes[] = {
-        &sceneOne,
-        &sceneTwo
+        &sceneOff,
+        &sceneOn,
+        &sceneSlowBreathing,
+        &sceneQuickBlinking,
     };
 
     uint8_t sceneIte = 0U;
 
-    while(true)
+    while (true)
     {
         if (btnObserver.IfChangeScene())
         {
             pScenes[sceneIte]->Stop();
-            sceneIte = (sceneIte + 1U) % 2U;
+            sceneIte = (sceneIte + 1U) % countof(pScenes);
             pScenes[sceneIte]->Start();
         }
         else
