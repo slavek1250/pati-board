@@ -68,6 +68,8 @@ int main(void)
 
     uint8_t sceneIte = 0U;
 
+    sceneOff.Start();
+
     while (true)
     {
         if (btnObserver.IfChangeScene())
