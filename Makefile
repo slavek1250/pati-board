@@ -25,7 +25,7 @@ fuse:
 install: flash fuse
 
 clean:
-	rm -f build
+	rm -rf build
 
 # file targets:
 main.elf: $(SRC)
