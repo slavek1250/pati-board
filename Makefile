@@ -3,7 +3,7 @@
 DEVICE		= attiny45
 CLOCK		= 1000000
 PROGRAMMER 	= -c usbasp
-SRC			= *.cpp
+SRC			= src/*.cpp
 
 # For ATTiny45, 1Mhz int osc. with watch-dog
 # see http://www.engbedded.com/fusecalc/
