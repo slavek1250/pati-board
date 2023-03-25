@@ -37,7 +37,8 @@ int main(void)
     wdt_enable(WDTO_1S);
     Gpio::PwmPb3 ledPwmOutputRaw;
     Gpio::PwmReverse ledPwmOutput(ledPwmOutputRaw);
-    Gpio::BinaryInput btnDriver(4U, true);
+    constexpr const uint8_t BTN_PIN = 4U;
+    Gpio::BinaryInput btnDriver(BTN_PIN, true);
     ButtonObserver btnObserver;
     Button btn(btnObserver, btnDriver, true);
 
@@ -66,9 +67,18 @@ int main(void)
         &sceneQuickBlinking,
     };
 
-    uint8_t sceneIte = 0U;
+    // Startup scene - twice time speed.
+    const uint16_t startupDurationMs = sceneLongOffRamp.GetDurationMs();
+    sceneLongOffRamp.Start();
+    for (uint16_t i = 1U; i < startupDurationMs; ++i)
+    {
+        wdt_reset();
+        _delay_us(500U);
+        sceneLongOffRamp.Tick();
+    }
 
-    sceneOff.Start();
+    // Main program
+    uint8_t sceneIte = 0U;
 
     while (true)
     {

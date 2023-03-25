@@ -79,7 +79,7 @@ PwmReverse::PwmReverse(const PwmIf& rWrappedPwm) :
 
 uint8_t PwmReverse::Read() const
 {
-    const uint8_t MAX = 0xFFU;
+    constexpr const uint8_t MAX = 0xFFU;
     const uint8_t realVal = m_rWrappedPwm.Read();
     return realVal ^ MAX;
 }
